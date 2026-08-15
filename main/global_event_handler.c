@@ -117,6 +117,13 @@ esp_err_t global_event_handler_initialize(void) {
         handle_sdcard(sdcard_inserted);
     } else {
         ESP_LOGE(TAG, "Failed to read SD card event (%s)", esp_err_to_name(res));
+        // WHY2025 hardware has no SD-card-detect signal wired up in badge-bsp,
+        // so this read always comes back ESP_ERR_NOT_SUPPORTED here -- not a
+        // real fault. Without insert-detection we can never know a card is
+        // present via this path, so just attempt the mount unconditionally;
+        // sd_mount() fails cleanly (SD_STATUS_ERROR, no crash) if the slot is
+        // actually empty.
+        sd_mount();
     }
 
     // Initialize audio jack (and apply the appropriate persisted volume)

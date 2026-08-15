@@ -86,6 +86,15 @@
 #include "hid_keyboard.h"
 #endif
 
+// esp-hosted's SDIO host driver calls this (declared, never defined anywhere
+// for WHY2025 -- link error otherwise, CONFIG_ESP_HOSTED_SDIO_RESET_SLAVE_USING_CALLBACK
+// is on in sdkconfigs/why2025) to hard-reset the C6 slave over GPIO. No
+// WHY2025-side reset-GPIO sequence exists anywhere in this repo, so this is a
+// no-op stub, not a real implementation.
+int hosted_reset_slave_callback(void) {
+    return 0;
+}
+
 // Constants
 static char const TAG[] = "main";
 
